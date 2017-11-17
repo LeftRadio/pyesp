@@ -3,7 +3,9 @@ import sys
 import os
 import argparse
 import json
-from pyesp import PyEsp as ESP
+from time import sleep
+from pyesp import ESP
+from PyQt5.QtCore import Qt, QCoreApplication
 
 __version__ = '0.5.0'
 
@@ -81,7 +83,19 @@ def createArgParser():
     return parser
 
 
-def run_pyesp():
+readend = False
+
+#
+def read_callback(data):
+    global readend
+    if not readend:
+        readend = ('END' in data)
+    print(data)
+
+
+def main():
+    #
+    global readend
     #
     parser = createArgParser()
     args = parser.parse_args()
@@ -106,9 +120,6 @@ def run_pyesp():
     #
     esp = ESP( serialconfig, args.platform, args.api_userfile )
     #
-    def read_callback(data):
-        print( data )
-    #
     if args.files:
         if args.command == 'filewrite':
             pass
@@ -116,15 +127,25 @@ def run_pyesp():
             pass
 
         for f in args.files.split(','):
-
+            print('-'*120)
+            print('read: ', f)
+            print('-'*120)
             esp.send( args.command, name=f, data=args.data, callback=read_callback )
+            while not readend:
+                esp.processEvents()
+            readend = False
     else:
         esp.send( args.command, data=args.data, callback=read_callback )
+        while not readend:
+            esp.processEvents()
+
     #
     saveconfig( esp.serialconfig )
     #
-    # sys.exit(esp)
+    print('--- Press ENTER to exit ---')
+    input()
+    sys.exit(True)
 
 
 if __name__ == '__main__':
-    run_pyesp()
+    main()

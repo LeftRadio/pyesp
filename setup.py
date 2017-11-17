@@ -6,7 +6,7 @@ print(find_packages())
 
 setup(
     name                    = 'pyesp',
-    version                 = '0.6.2',
+    version                 = '0.6.5',
     author                  = 'Vladislav Kamenev',
     author_email            = 'wladkam@mail.com',
     url                     = 'https://github.com/LeftRadio/pyesp',
@@ -36,13 +36,17 @@ example 6: $ pyesp -p MPY -c filewrite -f main.py --data import os\r\nimport mac
     download_url            = 'https://github.com/LeftRadio/pyesp',
     package_data            = { 'pyesp': ['data/api/*.json', 'data/serial/*.json'] },
     packages                = find_packages(),
-
-    entry_points  = { 'console_scripts':
-         [ 'pyesp = pyesp.main : run' ]
+    entry_points =
+    {
+        'console_scripts':
+        [
+            'pyesp = pyesp.run : main'
+        ]
     },
-    classifiers = [
+    classifiers =
+    [
         'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 3'
-        ],
+    ],
     license = 'MIT'
 )
