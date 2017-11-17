@@ -1,10 +1,11 @@
 #
-
+import os
 import threading
 from queue import Queue
 from time import time, sleep
 from PyQt5.QtCore import Qt, QCoreApplication, QIODevice, QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
+from pyesp import __api_mpy_path__, __api_node_path__
 
 
 class SerialPort(QSerialPort):
@@ -153,8 +154,8 @@ class SerialPort(QSerialPort):
 class ESP(QCoreApplication):
     """docstring for ESP"""
     _api_file = {
-        'MPY': 'data/api/mpython.json',
-        'NODE': 'data/api/node.json'
+        'MPY': os.path.join(os.path.dirname(__file__), __api_mpy_path__),
+        'NODE': os.path.join(os.path.dirname(__file__), __api_node_path__)
     }
 
     def __init__(self, serialconfig, platform='USER', api_file=None, loglevel=0):

@@ -1,19 +1,18 @@
 #
-import sys
 import os
+import sys
 import argparse
 import json
-from time import sleep
-from pyesp import ESP
-from PyQt5.QtCore import Qt, QCoreApplication
+from pyesp import __version__
+from pyesp import __serial_config_path__
+from pyesp.pyesp import ESP
 
-__version__ = '0.5.0'
 
-__serial_config_path__ = 'data/serial/config.json'
+serial_config_path = os.path.join(os.path.dirname(__file__), __serial_config_path__)
 
 
 def loadconfig():
-    with open(__serial_config_path__, 'r') as f:
+    with open(serial_config_path, 'r') as f:
         data = json.loads(f.read())
         if not len(data.keys()):
             raise BaseException('serial port config file empty')
@@ -22,7 +21,7 @@ def loadconfig():
 
 def saveconfig(data):
     jobj = json.dumps( data )
-    with open(__serial_config_path__, 'w') as f:
+    with open(serial_config_path, 'w') as f:
         f.write(jobj)
 
 
@@ -119,6 +118,12 @@ def main():
         raise BaseException('error in serial config parametrs')
     #
     esp = ESP( serialconfig, args.platform, args.api_userfile )
+    #
+    print('-'*80)
+    print('Platforms API location: ')
+    print('MicroPython: ', ESP._api_file['MPY'])
+    print('NodeMCU: ', ESP._api_file['NODE'])
+    print('-'*80)
     #
     if args.files:
         if args.command == 'filewrite':
